@@ -30,6 +30,9 @@ const Article = new graphql.GraphQLObjectType({
         name: {
             type: graphql.GraphQLString
         },
+        content:{
+            type: graphql.GraphQLString
+        },
         category: {
             type: Categroy,
             resolve(parent) {
@@ -122,7 +125,8 @@ const RootMutation = new graphql.GraphQLObjectType({
             type:Article,
             args:{
                 name: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
-                category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
+                category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+                content: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
             },
             resolve(parent,args){
                 return  ArticleModel.create(args)
@@ -135,12 +139,14 @@ const RootMutation = new graphql.GraphQLObjectType({
                     type:new graphql.GraphQLNonNull(graphql.GraphQLString),
                 },
                 name: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
-                category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
+                category: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) },
+                content: { type: new graphql.GraphQLNonNull(graphql.GraphQLString) }
             },
             resolve(parent,args){
                 return ArticleModel.findByIdAndUpdate(args.id, {
                     name: args.name,
-                    category: args.category
+                    category: args.category,
+                    content:args.content
                 }, (err, res) => {
                     if (err) {
                         throw err

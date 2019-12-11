@@ -19,6 +19,7 @@ const CategoryModel = conn.model('Category',Category)
 
 const Article= new mongoose.Schema({
     name:String,
+    content:String,
     category:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Category'

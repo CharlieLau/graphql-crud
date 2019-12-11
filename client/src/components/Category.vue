@@ -122,7 +122,7 @@ export default {
     },
     handleEdit(row) {
       this.visible = true;
-      this.form = row;
+      this.form = { ...row };
     },
     handleAdd() {
       this.form = {

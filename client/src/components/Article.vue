@@ -11,6 +11,7 @@
           {{ row.category.name }}
         </template>
       </el-table-column>
+      <el-table-column label="内容" prop="content"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini" @click="handleEdit(row)"
@@ -26,6 +27,15 @@
       <el-form :model="form" label-width="120px">
         <el-form-item label="name">
           <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="内容">
+          <el-input
+            v-model="form.content"
+            :autosize="{ minRows: 3 }"
+            type="textarea"
+            placeholder="写点啥吧.."
+          >
+          </el-input>
         </el-form-item>
         <el-form-item label="category">
           <el-select v-model="form.category" style="width:100%">
@@ -64,6 +74,7 @@ export default {
           getArticles {
             id
             name
+            content
             category {
               id
               name
@@ -96,8 +107,8 @@ export default {
     addArticle() {
       this.$apollo.mutate({
         mutation: gql`
-          mutation($name: String!, $category: String!) {
-            addArticle(name: $name, category: $category) {
+          mutation($name: String!, $category: String!, $content: String!) {
+            addArticle(name: $name, category: $category, content: $content) {
               id
               name
               category {
@@ -109,7 +120,8 @@ export default {
         `,
         variables: {
           name: this.form.name,
-          category: this.form.category
+          category: this.form.category,
+          content: this.form.content
         },
         update: (store, { data: { addCategory } }) => {
           this.$apollo.queries.articles.refetch();
@@ -120,8 +132,18 @@ export default {
     updateArticle() {
       this.$apollo.mutate({
         mutation: gql`
-          mutation($name: String!, $category: String!, $id: String!) {
-            editArticle(id: $id, name: $name, category: $category) {
+          mutation(
+            $name: String!
+            $category: String!
+            $id: String!
+            $content: String!
+          ) {
+            editArticle(
+              id: $id
+              name: $name
+              category: $category
+              content: $content
+            ) {
               id
               name
             }
@@ -130,7 +152,8 @@ export default {
         variables: {
           name: this.form.name,
           id: this.form.id,
-          category: this.form.category
+          category: this.form.category,
+          content: this.form.content
         },
         update: (store, { data: { addCategory } }) => {
           this.$apollo.queries.articles.refetch();
@@ -158,7 +181,7 @@ export default {
     },
     handleEdit(row) {
       this.visible = true;
-      this.form = row;
+      this.form = { ...row };
       this.form.category = row.category.id;
     },
     handleAdd() {
