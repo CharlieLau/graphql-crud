@@ -1,0 +1,11 @@
+{
+  "name": "graph-crud",
+  "version": "1.0.0",
+  "description": "* client  客户端 * server  服务端",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
