@@ -1,15 +1,19 @@
 <template>
   <div id="app">
     <category></category>
+    <Article></Article>
   </div>
 </template>
 
 <script>
 import Category from "./components/Category.vue";
+import Article from "./components/Article.vue";
+
 export default {
   name: "app",
   components: {
-    Category
+    Category,
+    Article
   }
 };
 </script>

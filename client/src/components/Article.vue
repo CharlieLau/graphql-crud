@@ -3,15 +3,20 @@
     <div style="margin:15px; text-align:right">
       <el-button type="primary" size="mini" @click="handleAdd">新增</el-button>
     </div>
-    <el-table :data="categories">
+    <el-table :data="articles">
       <el-table-column label="id" prop="id"></el-table-column>
-      <el-table-column label="name" prop="name"></el-table-column>
+      <el-table-column label="名称" prop="name"></el-table-column>
+      <el-table-column label="分类" prop="category">
+        <template slot-scope="{ row }">
+          {{ row.category.name }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="{ row }">
           <el-button type="primary" size="mini" @click="handleEdit(row)"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="deleteCategory(row)"
+          <el-button type="danger" size="mini" @click="deleteArticle(row)"
             >删除</el-button
           >
         </template>
@@ -20,7 +25,17 @@
     <el-dialog title="新增Category" :visible.sync="visible">
       <el-form :model="form" label-width="120px">
         <el-form-item label="name">
-          <el-input v-model="form.name" placeholder=""></el-input>
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="category">
+          <el-select v-model="form.category" style="width:100%">
+            <el-option
+              v-for="category in categories"
+              :key="category.id"
+              :label="category.name"
+              :value="category.id"
+            ></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer">
@@ -43,6 +58,21 @@ export default {
     };
   },
   apollo: {
+    articles: {
+      query: gql`
+        query {
+          getArticles {
+            id
+            name
+            category {
+              id
+              name
+            }
+          }
+        }
+      `,
+      update: data => data.getArticles
+    },
     categories: {
       query: gql`
         query {
@@ -58,35 +88,40 @@ export default {
   methods: {
     handleAddOrUpdate() {
       if (this.form.id) {
-        this.editCategory();
+        this.updateArticle();
       } else {
-        this.addCategory();
+        this.addArticle();
       }
     },
-    addCategory() {
+    addArticle() {
       this.$apollo.mutate({
         mutation: gql`
-          mutation($name: String!) {
-            addCategory(name: $name) {
+          mutation($name: String!, $category: String!) {
+            addArticle(name: $name, category: $category) {
               id
               name
+              category {
+                id
+                name
+              }
             }
           }
         `,
         variables: {
-          name: this.form.name
+          name: this.form.name,
+          category: this.form.category
         },
         update: (store, { data: { addCategory } }) => {
-          this.$apollo.queries.categories.refetch();
+          this.$apollo.queries.articles.refetch();
           this.visible = false;
         }
       });
     },
-    editCategory() {
+    updateArticle() {
       this.$apollo.mutate({
         mutation: gql`
-          mutation($name: String!, $id: String!) {
-            editCategory(id: $id, name: $name) {
+          mutation($name: String!, $category: String!, $id: String!) {
+            editArticle(id: $id, name: $name, category: $category) {
               id
               name
             }
@@ -94,19 +129,20 @@ export default {
         `,
         variables: {
           name: this.form.name,
-          id: this.form.id
+          id: this.form.id,
+          category: this.form.category
         },
         update: (store, { data: { addCategory } }) => {
-          this.$apollo.queries.categories.refetch();
+          this.$apollo.queries.articles.refetch();
           this.visible = false;
         }
       });
     },
-    deleteCategory(row) {
+    deleteArticle(row) {
       this.$apollo.mutate({
         mutation: gql`
           mutation($id: String!) {
-            deleteCategory(id: $id) {
+            deleteArticle(id: $id) {
               id
               name
             }
@@ -116,13 +152,14 @@ export default {
           id: row.id
         },
         update: (store, { data: { addCategory } }) => {
-          this.$apollo.queries.categories.refetch();
+          this.$apollo.queries.articles.refetch();
         }
       });
     },
     handleEdit(row) {
       this.visible = true;
       this.form = row;
+      this.form.category = row.category.id;
     },
     handleAdd() {
       this.form = {
