@@ -21,7 +21,7 @@ const Article= new mongoose.Schema({
     name:String,
     content:String,
     category:{
-        type:mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref:'Category'
     }
 })

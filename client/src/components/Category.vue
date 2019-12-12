@@ -32,6 +32,12 @@
 
 <script>
 import gql from "graphql-tag";
+import {
+  getCategoriesGQL,
+  addCategoryGQL,
+  editCategoryGQL,
+  deletCategoryGQL
+} from "../gqls/category.js";
 export default {
   data() {
     return {
@@ -44,14 +50,7 @@ export default {
   },
   apollo: {
     categories: {
-      query: gql`
-        query {
-          getCategories {
-            id
-            name
-          }
-        }
-      `,
+      query: getCategoriesGQL,
       update: data => data.getCategories
     }
   },
@@ -65,14 +64,7 @@ export default {
     },
     addCategory() {
       this.$apollo.mutate({
-        mutation: gql`
-          mutation($name: String!) {
-            addCategory(name: $name) {
-              id
-              name
-            }
-          }
-        `,
+        mutation: addCategoryGQL,
         variables: {
           name: this.form.name
         },
@@ -84,14 +76,7 @@ export default {
     },
     editCategory() {
       this.$apollo.mutate({
-        mutation: gql`
-          mutation($name: String!, $id: String!) {
-            editCategory(id: $id, name: $name) {
-              id
-              name
-            }
-          }
-        `,
+        mutation: editCategoryGQL,
         variables: {
           name: this.form.name,
           id: this.form.id
@@ -104,14 +89,7 @@ export default {
     },
     deleteCategory(row) {
       this.$apollo.mutate({
-        mutation: gql`
-          mutation($id: String!) {
-            deleteCategory(id: $id) {
-              id
-              name
-            }
-          }
-        `,
+        mutation: deletCategoryGQL,
         variables: {
           id: row.id
         },

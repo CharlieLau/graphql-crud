@@ -43,6 +43,7 @@ const Article = new graphql.GraphQLObjectType({
 })
 
 
+
 const RootQuery = new graphql.GraphQLObjectType({
     name: 'RootQuery',
     fields: {
@@ -54,7 +55,7 @@ const RootQuery = new graphql.GraphQLObjectType({
                 }
             },
             resolve(parent, args) {
-                return categories.find(item => item.id === args.id)
+                return CategoryModel.findById(args.id)
             }
         },
         getCategories: {

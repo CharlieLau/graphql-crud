@@ -14,18 +14,22 @@ const categories = [{
 const articles = [{
     id: 1,
     name: 'Vue in Action',
+    content:'hello world ~~',
     category: 1
 }, {
     id: 2,
     name: 'Awsome vue',
+    content:'hello world ~~',
     category: 1
 }, {
     id: 3,
     name: 'React in Action',
+    content:'hello world ~~',
     category: 3
 }, {
     id: 4,
     name: 'Angular in Action',
+    content:'hello world ~~',
     category: 2
 }]
 
